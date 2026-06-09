@@ -1,29 +1,48 @@
-# Floating Dock
+# React Floating Dock
 
-A modern **floating dock** for React, built with **raw CSS** and customizable icon support. Features scroll-aware visibility, smooth CSS-only animations, and support for light/dark themes.
+A modern, highly interactive **floating dock** component for React, built with **raw CSS**. It features a dynamic glassmorphism UI, scroll-aware visibility, hover tooltips, and Google Pixel-inspired "squash and stretch" physics.
+
+---
 
 ## Features
 
-*  Hides on scroll down, reappears on scroll up
-*  CSS-only animations for maximum performance
-*  Light & dark theme support
-*  Customizable icons
-*  Lightweight and dependency-free (except your chosen icon library)
+* **Smart Scroll Detection:** Hides automatically when scrolling down to save screen real estate and smoothly reappears on scroll up.
+* **Material You Physics:** Uses CSS-only `@keyframes` animations to simulate realistic jelly/spring motion without animation libraries.
+* **Dynamic Glassmorphism:** Frosted-glass styling powered by `backdrop-filter` with support for both Light and Dark modes.
+* **Hover Tooltips:** Smooth animated tooltips generated automatically from dock item labels.
+* **Highly Customizable:** Easily edit routes, labels, icons, styling, spacing, and animations.
+* **Lightweight:** No animation dependencies—everything is powered by native CSS.
+
+---
 
 ## Installation
 
-1. Copy `FloatingDock.jsx` and `FloatingDock.css` into your project (e.g. `src/components/`).
-2. Install an icon library (Lucide React is recommended):
+### 1. Copy the Component Files
+
+Place the following files inside your project:
+
+```text
+src/
+└── components/
+    ├── FloatingDock.jsx
+    └── FloatingDock.css
+```
+
+### 2. Install Dependencies
+
+The component uses **Lucide React** by default:
 
 ```bash
 npm install lucide-react
 ```
 
+---
+
 ## Usage
 
-Import the component into your main file (`App.jsx`, `App.js`, or your root layout component) and place it near the bottom of your JSX.
+Import the component into your main application file and place it near the bottom of your JSX tree.
 
-**Example: `src/App.jsx`**
+### Example: `src/App.jsx`
 
 ```jsx
 import FloatingDock from "./components/FloatingDock";
@@ -31,10 +50,9 @@ import FloatingDock from "./components/FloatingDock";
 function App() {
   return (
     <>
-      {/* Your page content */}
       <main>
-        <h1>My App</h1>
-        <p>Your content goes here...</p>
+        <h1>My Application</h1>
+        <p>Your main page content goes here...</p>
       </main>
 
       {/* Floating Dock */}
@@ -46,113 +64,170 @@ function App() {
 export default App;
 ```
 
-### Where should I put it?
+### Where Should I Put It?
 
-* **Single-page app:** Add `<FloatingDock />` inside `App.jsx`
-* **React Router:** Add it inside your shared layout component
-* **Next.js:** Add it inside `app/layout.jsx` or your main layout
+To keep the dock visible across your entire application:
 
-## Customizing Dock Items
+* **Vite / Create React App:** Place it inside `App.jsx`
+* **React Router:** Place it inside your shared `Layout` component
+* **Next.js:** Place it inside `app/layout.jsx` or your root layout
 
-Open **`src/components/FloatingDock.jsx`** and edit the `dockItems` array:
+> **Theme Note:** The demo includes a `D` key listener for toggling Light/Dark mode. You can remove that logic and connect the component to your application's theme system instead.
+
+---
+
+## Customization
+
+### Editing Dock Items
+
+Open **`FloatingDock.jsx`** and edit the `dockItems` array:
 
 ```jsx
 const dockItems = [
-  {
-    label: "Home",
-    href: "/",
-    icon: Home,
-  },
-  {
-    label: "Profile",
-    href: "/profile",
-    icon: User,
-  },
+  { label: "Home", href: "/", icon: Home },
+  { label: "Profile", href: "/profile", icon: User },
+  { label: "Projects", href: "/projects", icon: CodeXml },
 ];
 ```
 
-Add, remove, or modify items to fit your application.
+You can:
 
-## Styling
+* Add new items
+* Remove existing items
+* Change routes (`href`)
+* Change labels
+* Replace icons
 
-Open **`src/components/FloatingDock.css`** to customize:
+Tooltips are generated automatically from the `label` value.
 
-* Glassmorphism colors
-* Blur intensity
-* Dock size and spacing
-* Animations and transitions
-* Light/Dark mode appearance
+---
 
-## Icons
+### Changing Icons
 
-By default, the component uses **Lucide React**:
-
-```bash
-npm install lucide-react
-```
+By default, the component imports icons from **Lucide React**:
 
 ```jsx
 import { Home, User, Settings } from "lucide-react";
 ```
 
-You can use any React icon library.
+You can replace these with icons from any React icon library.
 
-### React Icons
-
-```bash
-npm install react-icons
-```
+Example:
 
 ```jsx
 import { FaHome, FaUser } from "react-icons/fa";
+
+const dockItems = [
+  { label: "Home", href: "/", icon: FaHome },
+  { label: "Profile", href: "/profile", icon: FaUser },
+];
 ```
 
-### Heroicons
+#### Icon Requirements
 
-```bash
-npm install @heroicons/react
-```
+Any icon component will work as long as it:
+
+* Is a valid React component
+* Can be rendered like `<IconComponent />`
+* Supports standard SVG/component props (`size`, `className`, etc.)
+* Is assigned to the `icon` property inside the `dockItems` array
+
+Example:
 
 ```jsx
-import { HomeIcon, UserIcon } from "@heroicons/react/24/outline";
+const dockItems = [
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: DashboardIcon,
+  },
+];
 ```
 
-### Tabler Icons
+---
 
-```bash
-npm install @tabler/icons-react
+### Adjusting Styles & Animations
+
+Open **`FloatingDock.css`** to customize the appearance.
+
+#### Glassmorphism
+
+Adjust values such as:
+
+```css
+background-color: rgba(15, 15, 15, 0.2);
+backdrop-filter: blur(12px);
 ```
 
-```jsx
-import { IconHome, IconUser } from "@tabler/icons-react";
+to make the glass effect stronger, lighter, clearer, or more tinted.
+
+#### Physics & Animations
+
+Modify:
+
+* `@keyframes pop-up-squash`
+* `@keyframes drop-down-hide`
+* `cubic-bezier()` timing functions
+
+to control:
+
+* Bounce amount
+* Squash & stretch intensity
+* Show/hide behavior
+* Hover responsiveness
+
+#### Sizing & Layout
+
+Adjust:
+
+```css
+.icons {
+  width: 26px;
+  height: 26px;
+}
 ```
 
-### Phosphor Icons
+and:
 
-```bash
-npm install @phosphor-icons/react
+```css
+.content {
+  column-gap: 5px;
+}
 ```
 
-```jsx
-import { House, User } from "@phosphor-icons/react";
-```
+to change icon size and spacing.
 
-### Remix Icons
-
-```bash
-npm install @remixicon/react
-```
-
-```jsx
-import HomeLineIcon from "@remixicon/react/HomeLineIcon";
-```
-
-> Any React icon component can be used as long as it is passed to the `icon` property in your `dockItems` array.
+---
 
 ## Requirements
 
-* React
-* Any React-compatible icon library (Lucide React recommended)
+### React
+
+* React 16.8+
+* Uses React Hooks (`useState`, `useEffect`)
+
+### CSS
+
+* CSS3
+* `backdrop-filter`
+* CSS Variables (optional)
+* CSS Keyframes & Transforms
+
+### Icons
+
+If using the default setup:
+
+```bash
+npm install lucide-react
+```
+
+If using another icon library, ensure the icons:
+
+* Are React components
+* Render SVGs or valid JSX
+* Support component props such as `size`, `className`, and `color`
+
+---
 
 ## License
 
