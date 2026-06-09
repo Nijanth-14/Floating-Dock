@@ -26,14 +26,25 @@ const dockItems = [
 
 export default function FloatingDock() {
   // STATE: Controls whether the dock is in light or dark mode
-  const [isLightMode, setIsLightMode] = useState(false);
-  
+  const [isLightMode, setIsLightMode] = useState(() => {
+    // Check if we are in a browser environment to avoid SSR errors
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("isLightMode");
+      return savedTheme ? JSON.parse(savedTheme) : false;
+    }
+    return false;
+  });
+
   // STATE: Controls whether the dock is currently visible on screen
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   // Determines icon color based on the current theme
   const iconColor = isLightMode ? "black" : "white";
+
+  useEffect(() => {
+    localStorage.setItem("isLightMode", JSON.stringify(isLightMode));
+  }, [isLightMode]);
 
   /*
     THEME TOGGLE LISTENER
@@ -58,7 +69,7 @@ export default function FloatingDock() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       // "50" is the threshold. It won't hide if you are at the absolute top of the page.
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
         setIsVisible(false);
